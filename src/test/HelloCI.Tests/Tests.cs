@@ -8,9 +8,14 @@ using System.Threading.Tasks;
 namespace HelloCI.Tests {
     [TestFixture]
     public class Tests {
-        [Test]
+        [Test, Ignore]
         public void FailTest() {
             Assert.AreEqual(1,2);
+        }
+
+        [Test]
+        public void PassTest() {
+            Assert.Pass("This test always passes");
         }
     }
 }

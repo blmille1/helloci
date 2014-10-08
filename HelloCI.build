@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.5" DefaultTargets="Compile">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.5" DefaultTargets="Test">
   <UsingTask AssemblyFile=".\thirdparty\tools\MSBuildAsyncExec\AsyncExec.dll" TaskName="AsyncExec.AsyncExec" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,7 +10,13 @@
     <SolutionFile Include=".\HelloCI.sln" />
     <Cassini Include="$(CommonProgramFiles)\microsoft shared\DevServer\11.0\WebDev.WebServer40.exe" />
     <Website Include=".\buildartifacts\_PublishedWebsites\HelloCI.Web" />
-  </ItemGroup>  
+  </ItemGroup>
+
+  <ItemGroup>
+    <NUnit Include=".\thirdparty\tools\NUnit\nunit-console.exe"/>
+    <TestAssembly Include=".\buildartifacts\HelloCI.Tests.dll" />
+    <TestResults Include=".\buildartifacts\TestResults.xml" />
+  </ItemGroup>
   
   <Target Name="Clean">
     <RemoveDir Directories="@(BuildArtifacts)" />
@@ -24,6 +30,10 @@
     <MSBuild Projects="@(SolutionFile)" Targets="Rebuild" Properties="OutDir=%(BuildArtifacts.FullPath);Configuration=$(Configuration)" />
   </Target>
 
+  <Target Name="Test" DependsOnTargets="Compile">
+    <Exec Command="@(NUnit) @(TestAssembly) /xml=@(TestResults)" />
+  </Target>
+  
   <Target Name="StartWebsite" DependsOnTargets="StopWebsite;Compile">
     <AsyncExec Command='"@(Cassini)" /port:9999 /path:"%(Website.FullPath)" /vpath:' />
   </Target>
