@@ -17,7 +17,27 @@
     <TestAssembly Include=".\buildartifacts\HelloCI.Tests.dll" />
     <TestResults Include=".\buildartifacts\TestResults.xml" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <NCoverPath Include=".\thirdparty\tools\NCover" />
+    <NCoverCoverage Include=".\buildartifacts\coverage.nccov" />
+    <NCoverTrend Include=".\buildartifacts\coverage.trend" />
+    <CoverageReportDir Include=".\buildartifacts\coverage\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FxCop Include=".\thirdparty\tools\FxCop\FxCopCmd.exe" />
+    <AssembliesToAnalyze Include=".\buildartifacts\HelloCI.Web.dll" />
+    <ReferencedAssemblies Include=".\thirdparty\libs\Mvc\System.Web.Mvc.dll" />
+    <AnalysisReport Include=".\buildartifacts\FxCopAnalysis.xml" />
+    <FxCopReferenceDir Include=".\thirdparty\libs\OpenAuth\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MsDeploy Include=".\thirdparty\tools\Microsoft Web Deploy\msdeploy.exe" />
+    <PackageFile Include=".\buildartifacts\package\HelloCI.zip" />
+  </ItemGroup>
+    
   <Target Name="Clean">
     <RemoveDir Directories="@(BuildArtifacts)" />
   </Target>
@@ -34,6 +54,33 @@
     <Exec Command="@(NUnit) @(TestAssembly) /xml=@(TestResults)" />
   </Target>
   
+  <Target Name="Package" DependsOnTargets="Compile;Test">
+    <PropertyGroup>
+      <PackageDir>%(PackageFile.RootDir)%(PackageFile.Directory)</PackageDir>
+      <Source>%(Website.FullPath)</Source>
+      <Destination>%(PackageFile.FullPath)</Destination>
+    </PropertyGroup>
+    <MakeDir Directories="$(PackageDir)" />
+    <Exec Command='"@(MsDeploy)" -verb:sync -source:iisApp="$(Source)" -dest:package="$(Destination)"' />
+  </Target>
+  
+  <!--<Target Name="TestWithCoverage" DependsOnTargets="Compile">
+    <NCover TestRunnerEx="@(NUnit)"
+            TestRunnerArgs="@(TestAssembly) /xml=@(TestResults)"
+            ToolPath="@(NCoverPath)"
+            WorkingDirectory="@(SolutionRoot)"
+            CoverageFile="@(NCoverCoverage)"
+            AppendTrendTo="@(NCoverTrend)"
+            IncludeAssemblies="$(CoveredAssemblies)"
+            ProjectName="HelloCI"
+            HtmlReportDir="@(CoverageReportDir)"
+            />
+  </Target>-->
+  
+  <!--<Target Name="FxCop" DependsOnTargets="Compile">
+    <Exec Command="@(FxCop) /file:@(AssembliesToAnalyze) /directory:@(FxCopReferenceDir) /out:@(AnalysisReport)" />
+  </Target>-->
+    
   <Target Name="StartWebsite" DependsOnTargets="StopWebsite;Compile">
     <AsyncExec Command='"@(Cassini)" /port:9999 /path:"%(Website.FullPath)" /vpath:' />
   </Target>
