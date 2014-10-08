@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloCI.Tests", "src\test\H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloCI.Core", "src\app\HelloCI.Core\HelloCI.Core.csproj", "{28A12195-7E0C-40AE-9AD5-3AE53E4A5B34}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D748CD7B-E8B3-4A9E-8C4B-6C411DA6F3E8}"
+	ProjectSection(SolutionItems) = preProject
+		HelloCI.build = HelloCI.build
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
