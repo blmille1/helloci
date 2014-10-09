@@ -37,6 +37,9 @@
     <MsDeploy Include=".\thirdparty\tools\Microsoft Web Deploy\msdeploy.exe" />
     <PackageFile Include=".\buildartifacts\package\HelloCI.zip" />
   </ItemGroup>
+  <PropertyGroup>
+    <WebServerName>localhost</WebServerName>
+  </PropertyGroup>
     
   <Target Name="Clean">
     <RemoveDir Directories="@(BuildArtifacts)" />
@@ -62,6 +65,13 @@
     </PropertyGroup>
     <MakeDir Directories="$(PackageDir)" />
     <Exec Command='"@(MsDeploy)" -verb:sync -source:iisApp="$(Source)" -dest:package="$(Destination)"' />
+  </Target>
+  
+  <Target Name="Deploy" DependsOnTargets="Package">
+    <PropertyGroup>
+      <Source>%(PackageFile.FullPath)</Source>
+    </PropertyGroup>
+    <Exec Command='"@(MsDeploy)" -verb:sync -source:package="$(Source)" -dest:iisApp=HelloCI,computerName=$(WebServerName)' />
   </Target>
   
   <!--<Target Name="TestWithCoverage" DependsOnTargets="Compile">
