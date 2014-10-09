@@ -38,7 +38,7 @@
     <PackageFile Include=".\buildartifacts\package\HelloCI.zip" />
   </ItemGroup>
   <PropertyGroup>
-    <WebServerName>localhost</WebServerName>
+    <WebServerName>win7-dev-vm1</WebServerName>
   </PropertyGroup>
     
   <Target Name="Clean">
